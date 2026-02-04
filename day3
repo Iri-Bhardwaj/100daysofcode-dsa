@@ -1,0 +1,67 @@
+/*
+Sample Test Cases:
+
+Input 1:
+5
+10 20 30 40 50
+30
+
+Output 1:
+Found at index 2
+Comparisons = 3
+
+
+Input 2:
+4
+5 15 25 35
+5
+
+Output 2:
+Found at index 0
+Comparisons = 1
+
+
+Input 3:
+6
+1 2 3 4 5 6
+10
+
+Output 3:
+Not Found
+Comparisons = 6
+*/
+
+#include <stdio.h>
+
+int main() {
+    int n, k;
+    int comparisons = 0;
+    int foundIndex = -1;
+
+    scanf("%d", &n);
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    scanf("%d", &k);
+
+    for (int i = 0; i < n; i++) {
+        comparisons++;
+        if (arr[i] == k) {
+            foundIndex = i;
+            break;
+        }
+    }
+
+    if (foundIndex != -1) {
+        printf("Found at index %d\n", foundIndex);
+    } else {
+        printf("Not Found\n");
+    }
+
+    printf("Comparisons = %d\n", comparisons);
+
+    return 0;
+}
