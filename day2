@@ -1,0 +1,58 @@
+/*
+Sample Test Cases:
+
+Input 1:
+5
+10 20 30 40 50
+2
+
+Output 1:
+10 30 40 50
+
+
+Input 2:
+4
+5 15 25 35
+1
+
+Output 2:
+15 25 35
+
+
+Input 3:
+6
+1 2 3 4 5 6
+6
+
+Output 3:
+1 2 3 4 5
+*/
+#include <stdio.h>
+
+int main() {
+    int n, pos;
+    int arr[100];
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    scanf("%d", &pos);
+
+    if (pos < 1 || pos > n) {
+        printf("Invalid position");
+        return 0;
+    }
+
+    for (int i = pos - 1; i < n - 1; i++) {
+        arr[i] = arr[i + 1];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    return 0;
+}
