@@ -1,0 +1,62 @@
+// Q: Write a program to insert an element at a given position in an array.
+
+/*
+Sample Test Cases:
+
+Input 1:
+5
+1 2 4 5 6
+3
+3
+
+Output 1:
+1 2 3 4 5 6
+
+
+Input 2:
+4
+10 20 30 40
+1
+5
+
+Output 2:
+5 10 20 30 40
+
+
+Input 3:
+3
+7 8 9
+4
+10
+
+Output 3:
+7 8 9 10
+*/
+
+#include <stdio.h>
+
+int main() {
+    int n, pos, x;
+    int arr[100];
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    scanf("%d", &pos);
+    scanf("%d", &x);
+
+    for (int i = n; i >= pos; i--) {
+        arr[i] = arr[i - 1];
+    }
+
+    arr[pos - 1] = x;
+
+    for (int i = 0; i <= n; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    return 0;
+}
