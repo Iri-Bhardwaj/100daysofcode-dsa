@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+int main() {
+    int n;
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        return 0;
+    }
+
+    int current, previous;
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &current);
+        if (i == 0 || current != previous) {
+            if (i == 0) {
+                printf("%d", current);
+            } else {
+                printf(" %d", current);
+            }
+        }
+        previous = current;
+    }
+    printf("\n");
+
+    return 0;
+}
