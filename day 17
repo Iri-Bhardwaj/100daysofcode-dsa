@@ -1,0 +1,14 @@
+n = int(input())
+arr = list(map(int, input().split()))
+
+maximum = arr[0]
+minimum = arr[0]
+
+for i in range(1, n):
+    if arr[i] > maximum:
+        maximum = arr[i]
+    if arr[i] < minimum:
+        minimum = arr[i]
+
+print("Max:", maximum)
+print("Min:", minimum)
