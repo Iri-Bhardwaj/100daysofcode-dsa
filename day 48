@@ -1,0 +1,21 @@
+/**
+ * Definition for a binary tree node.
+ */
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+int countLeafNodes(struct TreeNode* root) {
+    // Base case: empty tree
+    if (root == NULL)
+        return 0;
+
+    // If it's a leaf node
+    if (root->left == NULL && root->right == NULL)
+        return 1;
+
+    // Recursive case
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
+}
