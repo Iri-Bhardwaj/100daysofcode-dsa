@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define structure of tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Queue node for storing tree node and its horizontal distance
+struct QNode {
+    struct Node* node;
+    int hd;
+};
+
+// Simple queue implementation
+struct Queue {
+    int front, rear;
+    struct QNode arr[100];
+};
+
+void initQueue(struct Queue* q) {
+    q->front = q->rear = -1;
+}
+
+int isEmpty(struct Queue* q) {
+    return q->front == -1;
+}
+
+void enqueue(struct Queue* q, struct Node* node, int hd) {
+    if (q->rear == 99)
+        return;
+
+    if (q->front == -1)
+        q->front = 0;
+
+    q->rear++;
+    q->arr[q->rear].node = node;
+    q->arr[q->rear].hd = hd;
+}
+
+struct QNode dequeue(struct Queue* q) {
+    struct QNode temp = q->arr[q->front];
+
+    if (q->front == q->rear)
+        q->front = q->rear = -1;
+    else
+        q->front++;
+
+    return temp;
+}
+
+// Function for vertical order traversal
+void verticalOrder(struct Node* root) {
+
+    if (root == NULL)
+        return;
+
+    int map[200][50];     // store nodes
+    int count[200] = {0}; // count of nodes at each HD
+
+    struct Queue q;
+    initQueue(&q);
+
+    int offset = 100; // to handle negative index
+
+    enqueue(&q, root, 0);
+
+    while (!isEmpty(&q)) {
+
+        struct QNode temp = dequeue(&q);
+        struct Node* node = temp.node;
+        int hd = temp.hd;
+
+        map[hd + offset][count[hd + offset]++] = node->data;
+
+        if (node->left != NULL)
+            enqueue(&q, node->left, hd - 1);
+
+        if (node->right != NULL)
+            enqueue(&q, node->right, hd + 1);
+    }
+
+    // Print vertical order
+    for (int i = 0; i < 200; i++) {
+        if (count[i] > 0) {
+            for (int j = 0; j < count[i]; j++) {
+                printf("%d ", map[i][j]);
+            }
+            printf("\n");
+        }
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    if (n == 0)
+        return 0;
+
+    int arr[n];
+
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    struct Node* nodes[n];
+
+    for (int i = 0; i < n; i++) {
+        if (arr[i] != -1)
+            nodes[i] = createNode(arr[i]);
+        else
+            nodes[i] = NULL;
+    }
+
+    // Build tree from level order
+    for (int i = 0, j = 1; j < n; i++) {
+        if (nodes[i] != NULL) {
+            if (j < n)
+                nodes[i]->left = nodes[j++];
+            if (j < n)
+                nodes[i]->right = nodes[j++];
+        }
+    }
+
+    verticalOrder(nodes[0]);
+
+    return 0;
+}
