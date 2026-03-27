@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define structure
+struct node {
+    int data;
+    struct node* left;
+    struct node* right;
+};
+
+// Create new node
+struct node* createNode(int data) {
+    struct node* newNode = (struct node*)malloc(sizeof(struct node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Queue structure
+struct node* queue[100];
+int front = -1, rear = -1;
+
+void enqueue(struct node* temp) {
+    if (rear == 99)
+        return;
+    if (front == -1)
+        front = 0;
+    queue[++rear] = temp;
+}
+
+struct node* dequeue() {
+    if (front == -1 || front > rear)
+        return NULL;
+    return queue[front++];
+}
+
+// Print Right View
+void rightView(struct node* root) {
+    if (root == NULL)
+        return;
+
+    enqueue(root);
+
+    while (front <= rear) {
+        int levelSize = rear - front + 1;
+
+        for (int i = 0; i < levelSize; i++) {
+            struct node* temp = dequeue();
+
+            // Print last node of level
+            if (i == levelSize - 1)
+                printf("%d ", temp->data);
+
+            if (temp->left)
+                enqueue(temp->left);
+
+            if (temp->right)
+                enqueue(temp->right);
+        }
+    }
+}
+
+int main() {
+    int N;
+    scanf("%d", &N);
+
+    if (N == 0)
+        return 0;
+
+    int arr[N];
+    for (int i = 0; i < N; i++)
+        scanf("%d", &arr[i]);
+
+    if (arr[0] == -1)
+        return 0;
+
+    struct node* root = createNode(arr[0]);
+
+    front = rear = -1;
+    enqueue(root);
+
+    int i = 1;
+
+    // Build tree from level order
+    while (front <= rear && i < N) {
+        struct node* temp = dequeue();
+
+    
+        if (arr[i] != -1) {
+            temp->left = createNode(arr[i]);
+            enqueue(temp->left);
+        }
+        i++;
+
+        if (i < N && arr[i] != -1) {
+            temp->right = createNode(arr[i]);
+            enqueue(temp->right);
+        }
+        i++;
+    }
+
+    // Reset queue for traversal
+    front = rear = -1;
+
+    // Print right view
+    rightView(root);
+
+    return 0;
+}
