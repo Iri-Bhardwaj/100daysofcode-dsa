@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Hashmap node
+typedef struct Node {
+    int sum;
+    int index;
+    struct Node* next;
+} Node;
+
+#define TABLE_SIZE 10007
+
+Node* hashTable[TABLE_SIZE];
+
+// Simple hash function
+int hash(int key) {
+    return (key % TABLE_SIZE + TABLE_SIZE) % TABLE_SIZE;
+}
+
+// Insert sum into hashmap if not already present
+void insert(int sum, int index) {
+    int h = hash(sum);
+    Node* curr = hashTable[h];
+    while (curr) {
+        if (curr->sum == sum) return; // already exists
+        curr = curr->next;
+    }
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->sum = sum;
+    newNode->index = index;
+    newNode->next = hashTable[h];
+    hashTable[h] = newNode;
+}
+
+// Find index of sum if exists
+int find(int sum) {
+    int h = hash(sum);
+    Node* curr = hashTable[h];
+    while (curr) {
+        if (curr->sum == sum) return curr->index;
+        curr = curr->next;
+    }
+    return -1;
+}
+
+int longestZeroSumSubarray(int arr[], int n) {
+    memset(hashTable, 0, sizeof(hashTable));
+    int sum = 0, maxLen = 0;
+    for (int i = 0; i < n; i++) {
+        sum += arr[i];
+        if (sum == 0) {
+            if (i + 1 > maxLen) maxLen = i + 1;
+        }
+        int prevIndex = find(sum);
+        if (prevIndex != -1) {
+            int len = i - prevIndex;
+            if (len > maxLen) maxLen = len;
+        } else {
+            insert(sum, i);
+        }
+    }
+    return maxLen;
+}
+
+int main() {
+    int arr[] = {15, -2, 2, -8, 1, 7, 10, 23};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    printf("%d\n", longestZeroSumSubarray(arr, n));
+    return 0;
+}
