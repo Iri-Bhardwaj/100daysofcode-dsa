@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAXN 1000  // adjust as needed
+
+int graph[MAXN][MAXN];   // adjacency matrix
+bool visited[MAXN];
+int n, m;
+
+void dfs(int node) {
+    visited[node] = true;
+    for (int i = 1; i <= n; i++) {
+        if (graph[node][i] && !visited[i]) {
+            dfs(i);
+        }
+    }
+}
+
+int main() {
+    scanf("%d %d", &n, &m);
+
+    // initialize adjacency matrix
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            graph[i][j] = 0;
+        }
+        visited[i] = false;
+    }
+
+    // read edges
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        graph[u][v] = 1;
+        graph[v][u] = 1;  // undirected
+    }
+
+    int components = 0;
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            dfs(i);
+            components++;
+        }
+    }
+
+    printf("%d\n", components);
+    return 0;
+}
