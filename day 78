@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 100
+
+int n, m;
+int graph[MAX][MAX];
+int visited[MAX];
+int minKey[MAX];
+
+int minKeyVertex() {
+    int min = INT_MAX;
+    int min_index = -1;
+
+    for (int v = 1; v <= n; v++) {
+        if (!visited[v] && minKey[v] < min) {
+            min = minKey[v];
+            min_index = v;
+        }
+    }
+
+    return min_index;
+}
+
+int primMST() {
+    int totalWeight = 0;
+
+    for (int i = 1; i <= n; i++) {
+        minKey[i] = INT_MAX;
+        visited[i] = 0;
+    }
+
+    minKey[1] = 0;
+
+    for (int count = 1; count <= n; count++) {
+        int u = minKeyVertex();
+        visited[u] = 1;
+        totalWeight += minKey[u];
+
+        for (int v = 1; v <= n; v++) {
+            if (graph[u][v] && !visited[v] && graph[u][v] < minKey[v]) {
+                minKey[v] = graph[u][v];
+            }
+        }
+    }
+
+    return totalWeight;
+}
+
+int main() {
+    scanf("%d %d", &n, &m);
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            graph[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        scanf("%d %d %d", &u, &v, &w);
+        graph[u][v] = w;
+        graph[v][u] = w;
+    }
+
+    int result = primMST();
+    printf("%d", result);
+
+    return 0;
+}
