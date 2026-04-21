@@ -1,0 +1,138 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX 100
+
+typedef struct Node {
+    int vertex;
+    int weight;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    int vertex;
+    int distance;
+} HeapNode;
+
+Node* adj[MAX];
+int dist[MAX];
+int visited[MAX];
+
+HeapNode heap[MAX];
+int heapSize = 0;
+
+void swap(HeapNode* a, HeapNode* b) {
+    HeapNode temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void push(int v, int d) {
+    heap[heapSize].vertex = v;
+    heap[heapSize].distance = d;
+    int i = heapSize;
+    heapSize++;
+
+    while (i > 0 && heap[(i - 1) / 2].distance > heap[i].distance) {
+        swap(&heap[(i - 1) / 2], &heap[i]);
+        i = (i - 1) / 2;
+    }
+}
+
+HeapNode pop() {
+    HeapNode root = heap[0];
+    heap[0] = heap[--heapSize];
+
+    int i = 0;
+    while (1) {
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+        int smallest = i;
+
+        if (left < heapSize && heap[left].distance < heap[smallest].distance)
+            smallest = left;
+
+        if (right < heapSize && heap[right].distance < heap[smallest].distance)
+            smallest = right;
+
+        if (smallest != i) {
+            swap(&heap[i], &heap[smallest]);
+            i = smallest;
+        } else {
+            break;
+        }
+    }
+
+    return root;
+}
+
+void addEdge(int u, int v, int w) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->vertex = v;
+    newNode->weight = w;
+    newNode->next = adj[u];
+    adj[u] = newNode;
+}
+
+void dijkstra(int n, int source) {
+    for (int i = 1; i <= n; i++) {
+        dist[i] = INT_MAX;
+        visited[i] = 0;
+    }
+
+    dist[source] = 0;
+    push(source, 0);
+
+    while (heapSize > 0) {
+        HeapNode node = pop();
+        int u = node.vertex;
+
+        if (visited[u])
+            continue;
+
+        visited[u] = 1;
+
+        Node* temp = adj[u];
+        while (temp != NULL) {
+            int v = temp->vertex;
+            int w = temp->weight;
+
+            if (!visited[v] && dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                push(v, dist[v]);
+            }
+
+            temp = temp->next;
+        }
+    }
+}
+
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    for (int i = 0; i <= n; i++)
+        adj[i] = NULL;
+
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        scanf("%d %d %d", &u, &v, &w);
+        addEdge(u, v, w);
+        addEdge(v, u, w);
+    }
+
+    int source;
+    scanf("%d", &source);
+
+    dijkstra(n, source);
+
+    for (int i = 1; i <= n; i++) {
+        if (dist[i] == INT_MAX)
+            printf("INF ");
+        else
+            printf("%d ", dist[i]);
+    }
+
+    return 0;
+}
